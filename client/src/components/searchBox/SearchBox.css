@@ -1,0 +1,8 @@
+.suggestions {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.suggestions .suggestionType {
+  text-align: right;
+}
