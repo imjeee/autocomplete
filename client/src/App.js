@@ -21,9 +21,9 @@ export default class App extends Component {
     axios.get('/api/autocomplete/' + userInput)
     .then((response) => {
       console.log(response.data); // ex.: { user: 'Your User'}
-      console.log(response.status); // ex.: 200
+      // console.log(response.status); // ex.: 200
       this.setState({
-        suggestions: response.data.products
+        suggestions: response.data
       })
     });
   }

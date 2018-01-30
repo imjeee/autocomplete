@@ -18,7 +18,7 @@ export default class Searchbox extends Component {
     return <span><b>{highlighted}</b>{notHighlighted}</span>
   }
 
-  renderASuggestion(suggestion) {
+  renderASuggestion(suggestion, index) {
     const userInput = this.refs.userInput.value
     const suggestionNameBeginning = suggestion.name.substring(0, userInput.length)
     const type = suggestion.type.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ' ').toLowerCase()
@@ -28,7 +28,7 @@ export default class Searchbox extends Component {
     }
 
     return (
-      <a key={suggestion.name}
+      <a key={suggestion.name + '-' + suggestion.type + '-' + index}
         className="list-group-item list-group-item-action"
         href={suggestion.url}>
         <div className="row">
@@ -56,8 +56,8 @@ export default class Searchbox extends Component {
             </div>
         </div>
         <div className="suggestions">
-          {this.props.suggestions.map(suggestion => {
-            return this.renderASuggestion(suggestion)
+          {this.props.suggestions.map((suggestion, index) => {
+            return this.renderASuggestion(suggestion, index)
           })}
         </div>
       </div>
