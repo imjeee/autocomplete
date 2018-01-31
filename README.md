@@ -32,7 +32,9 @@ UI handles the search page, also serves as a proxy for backend service via redir
 ## service
 service layer reads a products.json file on start up, parse the file, remove any duplicates, and saves in memory. below is its only api
 
+```
 /api/autocomplete/:userInput
+```
 
 this api gets the userInput string, compare to the product names, if there is a match, put in a json response and return to UI.
 
