@@ -38,6 +38,7 @@ this api gets the userInput string, compare to the product names, if there is a 
 
 sample response object from service:
 
+``` javascript
 {
    "INVESTMENT":[
       {
@@ -64,3 +65,4 @@ sample response object from service:
       }
    ]
 }
+```
