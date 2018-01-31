@@ -15,7 +15,23 @@ export default class Searchbox extends Component {
 
     // console.log(this.refs.userInput.value)
     // console.log(this.props.suggestions)
-    return <span><b>{highlighted}</b>{notHighlighted}</span>
+    return <span>{highlighted}<b>{notHighlighted}</b></span>
+  }
+
+  renderACategory(categoryName, productsInThisCategory, index) {
+
+    var prettyCategoryName = categoryName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, ' ').toLowerCase()
+
+    return (
+      <div key={categoryName + '-' + index} className="category">
+        <div className="categoryName text-primary">{prettyCategoryName}</div>
+        <ul className="list-group list-group-flush">
+          {productsInThisCategory.map((product, index) => {
+            return this.renderASuggestion(product, index)
+          })}
+        </ul>
+      </div>
+    )
   }
 
   renderASuggestion(suggestion, index) {
@@ -29,11 +45,10 @@ export default class Searchbox extends Component {
 
     return (
       <a key={suggestion.name + '-' + suggestion.type + '-' + index}
-        className="list-group-item list-group-item-action"
+        className="list-group-item list-group-item-action list-group-no-border"
         href={suggestion.url}>
         <div className="row">
           <div className="col">{this.highlightMatchingString(suggestion.name, suggestionNameBeginning.length)}</div>
-          <div className="col suggestionType text-info">{type}</div>
         </div>
       </a>
     )
@@ -55,12 +70,16 @@ export default class Searchbox extends Component {
               <button className="btn btn-primary" type="button">Search</button>
             </div>
         </div>
-        <div className="suggestions">
-          {this.props.suggestions.map((suggestion, index) => {
-            return this.renderASuggestion(suggestion, index)
-          })}
+        <div className="suggestions card">
+            {Object.keys(this.props.products).map((categoryName, index) => {
+              return this.renderACategory(categoryName, this.props.products[categoryName], index)
+            })}
         </div>
       </div>
     )
   }
 }
+
+// {this.props.products.map((suggestion, index) => {
+//   return this.renderASuggestion(suggestion, index)
+// })}

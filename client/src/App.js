@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import debounce from 'lodash/debounce';
+import _, {debounce} from 'lodash';
 import axios from 'axios';
 
 import SearchBox from './components/searchBox/SearchBox.js'
@@ -10,41 +10,45 @@ import './bootstrap.min.css';
 
 
 export default class App extends Component {
-  state = { suggestions: [] }
-  // componentDidMount() {
-  //   fetch('/users')
-  //   .then(res => res.json())
-  //   .then(users => this.setState({ users }))
-  // }
+
+  constructor(props) {
+      super(props);
+      this.state = { products: {} }
+  }
 
   callServerSetResult(userInput) {
     axios.get('/api/autocomplete/' + userInput)
     .then((response) => {
-      console.log(response.data); // ex.: { user: 'Your User'}
+      // console.log(response.data); // ex.: { user: 'Your User'}
       // console.log(response.status); // ex.: 200
       this.setState({
-        suggestions: response.data
+        products: response.data
       })
-    });
+    })
   }
 
   onUserInput(e) {
     const userInput = e.target.value
-    if (userInput === '') { return; }
+    if (userInput === '') {
+      this.setState({ products: {} })
+      return;
+    }
 
-    this.callServerSetResult(userInput)
-
-    // const that = this
-    // debounce(that.callServerSetResult(), 0)
+    this.delayedOnUserInput(userInput)
   }
+
+  delayedOnUserInput = debounce(userInput => {
+    this.callServerSetResult(userInput)
+  }, 200)
 
   render() {
     return (
       <div className="App container">
+        <h1>Personal Capital</h1>
         <SearchBox
           className="col"
-          onUserInput={e => this.onUserInput(e)}
-          suggestions={this.state.suggestions}
+          onUserInput={ e => this.onUserInput(e) }
+          products={this.state.products}
         />
       </div>
     );

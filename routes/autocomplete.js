@@ -7,16 +7,38 @@ router.get('/:userInput', function(req, res, next) {
   // console.log(req.params.userInput)
   var input = req.params.userInput;
   // console.log(input);
-  // console.log(products.products);
-  var suggestedProducts = products.filter(function(prod) {
+  // console.log(products);
+  var suggestedProducts = getSuggestedProducts(input, products);
+  var productsByCategories = getProductsByCategories(suggestedProducts);
+
+  // console.log(suggestedProducts)
+  // console.log(productsByCategories)
+
+  res.json(productsByCategories)
+});
+
+function getSuggestedProducts(input, products) {
+  return products.filter(function(prod) {
     var prodBeginning = prod.name.substring(0, input.length);
     return input.toLowerCase() === prodBeginning.toLowerCase();
+  });
+}
+
+function getProductsByCategories(suggestedProducts) {
+  var productsByCategories = {};
+  suggestedProducts.forEach(function(prod) {
+    var category = prod.type;
+
+    if (!productsByCategories[category]) {
+      productsByCategories[category] = [];
+    }
+
+    if (productsByCategories[category].length < 2) {
+      productsByCategories[category].push(prod)
+    }
   })
-
-  console.log(suggestedProducts)
-
-  res.json(suggestedProducts)
-});
+  return productsByCategories;
+}
 
 function readJsonFileSync(filepath, encoding){
     if (typeof (encoding) == 'undefined'){
@@ -28,20 +50,24 @@ function readJsonFileSync(filepath, encoding){
 
 function getProducts(file){
     var filepath = __dirname + '/' + file;
-    var products = readJsonFileSync(filepath);
-
-    var keys = {};
-    var productsWithoutDups = [];
-
-    products.products.forEach(function(prod) {
-      var key = prod.name + prod.url + prod.type;
-      if (!keys[key]) {
-        productsWithoutDups.push(prod);
-        keys[key] = true;
-      }
-    });
-
+    var rawProducts = readJsonFileSync(filepath);
+    var productsWithoutDups = removeDups(rawProducts.products);
     return productsWithoutDups;
+}
+
+function removeDups(products) {
+  var keys = {};
+  var productsWithoutDups = [];
+
+  products.forEach(function(prod) {
+    var key = prod.name + prod.url + prod.type;
+    if (!keys[key]) {
+      productsWithoutDups.push(prod);
+      keys[key] = true;
+    }
+  });
+
+  return productsWithoutDups;
 }
 
 module.exports = router;
